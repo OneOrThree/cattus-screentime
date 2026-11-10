@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "cattus-screentime": ["../src/index"],
+      "cattus-screentime/*": ["../src/*"]
+    }
+  }
+}

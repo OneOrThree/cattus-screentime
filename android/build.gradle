@@ -1,0 +1,30 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'com.oneorthree.cattus.screentime'
+version = '0.1.0'
+
+android {
+  namespace "com.oneorthree.cattus.screentime"
+  defaultConfig {
+    versionCode 1
+    versionName "0.1.0"
+  }
+  lintOptions {
+    abortOnError false
+  }
+  testOptions {
+    unitTests {
+      // Android framework calls (for example Log) return defaults instead of throwing.
+      returnDefaultValues = true
+    }
+  }
+}
+
+dependencies {
+  testImplementation 'junit:junit:4.13.2'
+  // The android.jar stub of org.json throws in JVM tests; use the real implementation.
+  testImplementation 'org.json:json:20240303'
+}

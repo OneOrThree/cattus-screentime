@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  js:
+    name: TypeScript, lint and Jest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npx eslint src/ --max-warnings 0
+      - run: npm test -- --ci
+      - run: npm run check:extension
+      - name: Typecheck the example app
+        working-directory: example
+        run: |
+          npm ci
+          npx tsc --noEmit
+
+  android:
+    name: Android unit tests and debug build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - run: npm ci
+      - name: Generate the example Android project
+        working-directory: example
+        run: |
+          npm ci
+          npx expo prebuild -p android --no-install
+      - name: Unit tests
+        working-directory: example/android
+        run: ./gradlew :cattus-screentime:testDebugUnitTest --no-daemon
+      - name: Debug build
+        working-directory: example/android
+        run: ./gradlew :app:assembleDebug --no-daemon
+
+  ios:
+    name: iOS simulator build
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Use the newest installed Xcode
+        run: |
+          sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -n 1)"
+          xcodebuild -version
+      - run: npm ci
+      - name: Generate the example iOS project
+        working-directory: example
+        run: |
+          npm ci
+          npx expo prebuild -p ios
+      - name: Build for the simulator without signing
+        working-directory: example/ios
+        env:
+          SKIP_BUNDLING: '1'
+        run: |
+          set -o pipefail
+          xcodebuild -workspace CattusScreenTimeExample.xcworkspace \
+            -scheme CattusScreenTimeExample -configuration Debug \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build CODE_SIGNING_ALLOWED=NO build | tail -n 40
+          test -d build/Build/Products/Debug-iphonesimulator/CattusScreenTimeExample.app/PlugIns/screentimemonitor.appex

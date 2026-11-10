@@ -1,0 +1,11 @@
+cattus-screentime
+Copyright 2026 OneOrThree
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+The measurement code was extracted from Cattus, an app developed by OneOrThree, and
+generalized for reuse. Account, server, reward and app-blocking code was removed.
+
+The project scaffolding (internal/module_scripts, tsconfig and Metro configuration of the
+example app) was generated with create-expo-module from expo-module-template,
+Copyright (c) 2015-present 650 Industries, Inc. (aka Expo), licensed under the MIT License.
