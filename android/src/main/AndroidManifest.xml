@@ -1,0 +1,20 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools">
+  <!-- Special permission: the user grants it in Settings > Usage access. There is no runtime prompt. -->
+  <uses-permission
+    android:name="android.permission.PACKAGE_USAGE_STATS"
+    tools:ignore="ProtectedPermissions" />
+
+  <!--
+    Package visibility on Android 11+. Without this block queryIntentActivities returns an
+    almost empty list: the installed-app list is empty and the usage breakdown filters out
+    every app. QUERY_ALL_PACKAGES is not used: it is a restricted permission on Google Play
+    and launchable apps are all this module needs.
+  -->
+  <queries>
+    <intent>
+      <action android:name="android.intent.action.MAIN" />
+      <category android:name="android.intent.category.LAUNCHER" />
+    </intent>
+  </queries>
+</manifest>

@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android"],
+  "apple": {
+    "modules": ["CattusScreenTimeModule"]
+  },
+  "android": {
+    "modules": ["com.oneorthree.cattus.screentime.CattusScreenTimeModule"]
+  }
+}
