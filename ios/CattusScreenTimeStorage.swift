@@ -89,9 +89,7 @@ struct CattusStorage {
 
   /// One event per 15 minutes up to 900 minutes.
   ///
-  /// Web domains are sent only when the selection has no categories. This rule comes unchanged
-  /// from the app this module was extracted from, where it ran in production; its reason was not
-  /// recorded. Test on a device before changing it.
+  /// Web domains are sent only when the selection has no categories.
   private static func events(_ selection: FamilyActivitySelection)
     -> [DeviceActivityEvent.Name: DeviceActivityEvent]
   {
