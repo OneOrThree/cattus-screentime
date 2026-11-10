@@ -64,10 +64,12 @@ public class CattusScreenTimeModule: Module {
 
   private static func statusString() -> String {
     switch AuthorizationCenter.shared.authorizationStatus {
-    case .approved, .approvedWithDataAccess: return "approved"
     case .denied: return "denied"
     case .notDetermined: return "notDetermined"
-    @unknown default: return "notDetermined"
+    // `.approved`, and `.approvedWithDataAccess` from iOS 26.4. The newer case is not named so
+    // the module still builds with SDKs before 26.4; an app built with such an SDK can still
+    // receive it on an iOS 26.4 device, and it lands here too.
+    default: return "approved"
     }
   }
 
